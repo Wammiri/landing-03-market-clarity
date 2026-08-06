@@ -24,7 +24,9 @@ Every significant decision, including the ones where nothing gets built. Status 
 
 **Traded off:** Roughly 30 to 50 KB gzipped on a page targeting Lighthouse 95+.
 
-**Pin the version** at install time and record it here once known.
+**Pinned version:** `framer-motion` 13.0.0, installed with `--save-exact` so `package.json` carries the exact version rather than a caret range. Installed 2026-08-07 in batch B1-01 alongside Next.js 16.3.0, React 19.2.8, Tailwind 4.
+
+**Note on Tailwind:** the scaffold produced Tailwind v4, which configures through `@theme` in `app/globals.css` and has no `tailwind.config.ts`. `BATCH_PLAN.md` lists that file under B1, but it is not created, since v4 does not use one. Design tokens live in `globals.css` instead.
 
 **Status:** settled
 
