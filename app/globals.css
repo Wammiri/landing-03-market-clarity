@@ -1,26 +1,85 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+  Market Clarity Live design tokens, SPEC.md section 2.
+  Tailwind 4 configures in CSS, so this file is the config. No tailwind.config.ts.
+*/
+@theme {
+  --color-bg-top: #e63b12;
+  --color-bg-bottom: #c22f0c;
+  --color-type: #fff7f2;
+  --color-ink: #14100e;
+  --color-tint: rgba(255, 255, 255, 0.14);
+  --color-go: #ffd84d;
+
+  --font-display: var(--font-anton), sans-serif;
+  --font-body: var(--font-archivo), sans-serif;
+  --font-mono: var(--font-plex-mono), monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  /* Full bleed vermilion field, top to bottom. */
+  background-color: var(--color-bg-bottom);
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-bg-top) 0%,
+    var(--color-bg-bottom) 100%
+  );
+  background-repeat: no-repeat;
+  color: var(--color-type);
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+
+/* Focus rings in type color, per SPEC.md section 7. */
+:focus-visible {
+  outline: 2px solid var(--color-type);
+  outline-offset: 3px;
+}
+
+/*
+  Countdown digits never jitter: tabular figures plus fixed width boxes.
+  SPEC.md section 7 calls this out as a Lighthouse and quality requirement.
+*/
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* The single yellow micro accent: the live dot. 1.5s soft opacity pulse. */
+@keyframes go-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.go-dot {
+  animation: go-pulse 1.5s ease-in-out infinite;
+}
+
+/*
+  Reduced motion turns off decoration only. The countdown numbers keep
+  updating because they are content, per SPEC.md section 3.
+*/
+@media (prefers-reduced-motion: reduce) {
+  .go-dot {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
