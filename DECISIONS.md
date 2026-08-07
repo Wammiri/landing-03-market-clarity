@@ -150,13 +150,19 @@ Between 19:00:00 and 19:00:59 on a Thursday, `getHours() === 19` and `getMinutes
 
 ---
 
-## D-12. GA4 Measurement ID stays as the placeholder
+## D-12. GA4 Measurement ID
 
-**Chosen:** `G-XXXXXXXXXX` is left exactly as written. The Meta Pixel block stays commented.
+**Chosen:** `G-XXXXXXXXXX` was left exactly as written through batch B1. **Resolved 2026-08-07 in batch B1a:** Isaac created the property and web data stream for `landing-03-market-clarity.vercel.app` and supplied `G-0QXCCQYR17`, which is now live in `app/layout.tsx`.
 
-**Why:** Human gate. Only Isaac can create the GA4 property and its data streams.
+**Why the placeholder held through B1:** human gate. Only Isaac can create the GA4 property and its data streams.
 
-**Status:** settled, blocked pending Isaac
+**Why the ID is committed rather than set as an environment variable:** a GA4 Measurement ID is not a secret. It ships in the client bundle of every GA4 site and is readable in page source, so an env var would add indirection without adding protection. This is a deliberate exception to the general rule that configuration goes in the environment, and it does not apply to anything with an actual secret value.
+
+**Consequence to be aware of:** the property is live, so the deployed page now collects real visitor analytics. Per D-07 the page itself still triggers no consent or privacy obligation, since the forms store and transmit nothing. GA4's own cookies are the only thing set.
+
+**The Meta Pixel block stays commented.** No Pixel ID has been supplied and none is needed for a concept build.
+
+**Status:** settled, resolved
 
 ---
 

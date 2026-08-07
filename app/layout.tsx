@@ -45,10 +45,12 @@ export const viewport: Viewport = {
 };
 
 /*
-  Human gate: this placeholder is replaced by Isaac with the real GA4
-  Measurement ID once the property and data stream exist. Do not invent one.
+  The live GA4 Measurement ID for this property, supplied by Isaac on
+  2026-08-07 (decision D-12). Not a secret: it ships in the client bundle of
+  every GA4 site and is visible in page source, so it belongs in the code
+  rather than in an environment variable.
 */
-const GA_MEASUREMENT_ID = "G-XXXXXXXXXX";
+const GA_MEASUREMENT_ID = "G-0QXCCQYR17";
 
 export default function RootLayout({
   children,
