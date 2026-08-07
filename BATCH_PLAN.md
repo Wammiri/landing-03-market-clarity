@@ -8,7 +8,7 @@ Status values: `not started`, `in progress`, `blocked: pending X`, `done`.
 
 ## B1. Build the page to spec
 
-**Status:** not started
+**Status:** done (2026-08-07). All thirteen tasks landed. Verification rung 3 plus the rung 2 countdown logic check. Sixteen Playwright assertions pass (the fourteen planned, plus two added after verification exposed a content bug the original set missed). See `SESSION_LOG.md`.
 
 **Depends on:** nothing
 
