@@ -91,3 +91,45 @@ The D-05 edge case was also exercised directly: at Thu 19:00:30 the function ret
 **Next:** B2, after deploy.
 
 ---
+
+## 2026-08-07. Session 2 (out of band): B1a, live GA4 Measurement ID
+
+**Who:** Isaac, directly. Not run through a fresh Claude Code session or the batch protocol at the time; recorded here after the fact so the pack matches what actually shipped.
+
+**What landed:** `G-0QXCCQYR17` replaced the `G-XXXXXXXXXX` placeholder in `app/layout.tsx`. Isaac created the GA4 property and web data stream for `landing-03-market-clarity.vercel.app`, then deployed the site to Vercel. Commit `feat(analytics): B1a-01 set live GA4 measurement ID`, already pushed. Recorded as `BATCH_PLAN.md` batch B1a and `DECISIONS.md` D-12.
+
+**Verification:** build and lint clean, per the commit message. The pack files (`SESSION_LOG.md`, `CHANGELOG.md`, `BATCH_PLAN.md`) were not updated at the time; this session closes that gap.
+
+**Flags for Isaac:** none new. This entry exists so state lives in the files rather than only in git history.
+
+---
+
+## 2026-08-07. Session 3: B2 attempt, pack reconciliation, and D-05 closed
+
+**Who:** Claude Code, resuming after B1a. Asked to continue with "the next batch."
+
+**What landed:**
+
+- Confirmed the site is live: WebFetch against `https://landing-03-market-clarity.vercel.app` returned the correct H1 (`STOP GUESSING WHAT THE MARKET IS DOING.`) and the footer credit line linking to isaac.aperio.finance/landing. This is B2-00, added to `BATCH_PLAN.md` to capture what got verified before the network stopped cooperating.
+- **B1a bookkeeping gap closed.** `SESSION_LOG.md`, `CHANGELOG.md`, and `BATCH_PLAN.md` did not reflect the GA4 ID going live, and B1a was not recorded as a batch. Added the B1a entry above, added a B1a section to `BATCH_PLAN.md`, updated `CHANGELOG.md`.
+- **D-05 (countdown edge case) closed.** Isaac confirmed the clamp to all zeros is fine and the specced function stays untouched. No code change. Status moved from "inferred, flagged" to "settled."
+- **B2 restructured in `BATCH_PLAN.md`** into tasks split by who can actually do them, since most of B2 sits on the human gate list (anything verified against a live external service) regardless of tooling. Exact steps for GA4 DebugView, the live countdown check, and PageSpeed were written out for Isaac.
+- **New finding, recorded as D-17:** this session's Bash/PowerShell tools cannot resolve DNS for the live host at all (`curl`, `vercel whoami` both failed or hung), and a Playwright browser launched from this sandbox got `net::ERR_NAME_NOT_RESOLVED` against the same URL. WebFetch reached the live URL successfully exactly once, then failed twice more with `getaddrinfo ETIMEOUT`. A throwaway Playwright spec was drafted to check the live GA4 script tag, the countdown digits, and a live form submission, but it could not be run to completion and was not committed (deleted along with its scratch test-results output before pushing).
+
+**Verification: rung 4 was the target for B2, and only B2-00 was actually reached this session.** GA4 DebugView (B2-01) and the PageSpeed mobile score (B2-03) need Isaac's own Google login regardless of network access, so those were always going to be human-gated. The live countdown eyeball check (B2-02) and a full live Playwright pass were plausibly automatable but blocked on the network issue in D-17. Nothing in B2-01 through B2-03 is marked done; each says exactly what is still needed.
+
+`npm run build` and `npm run lint` both still pass on the untouched product code (no product code changed this session, only the pack files). Em dash scan: zero results. Diff scanned for secrets: none, the only ID involved (the GA4 Measurement ID) is not a secret per D-12.
+
+**Flags for Isaac:**
+
+1. **B2-01, B2-02, B2-03 still need you.** Exact steps are in `BATCH_PLAN.md` under B2. None of it is guessed.
+2. **Network limitation recorded as D-17.** Worth a quick retry at the start of any future B2 session in case it was transient; if it resolves, the drafted live-check approach can automate B2-00 and part of B2-02.
+3. **D-05 closed per your answer:** clamp stays, function stays as specced, no code change.
+
+**Ambiguities resolved with a default, per the protocol:** none new this session beyond what you already decided directly (B2 scope split, D-05).
+
+**Parked:** B2-01, B2-02, B2-03, B2-04, same as before, now with concrete steps instead of a bare task list.
+
+**Next:** Isaac runs the B2 steps in `BATCH_PLAN.md`, reports back the DebugView confirmation and the PageSpeed mobile score, and a future session closes B2-04 (the handoff to project 05) with the real numbers.
+
+---

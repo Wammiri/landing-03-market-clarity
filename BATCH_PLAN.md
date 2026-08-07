@@ -97,24 +97,57 @@ Record the rung and the results in `SESSION_LOG.md`.
 
 ---
 
+## B1a. GA4 Measurement ID and deploy (out of band, human led)
+
+**Status:** done (2026-08-07). Isaac created the GA4 property and web data stream for `landing-03-market-clarity.vercel.app`, supplied `G-0QXCCQYR17`, and deployed to Vercel. Not run through the batch protocol at the time (no fresh-session prompt, pack files not updated until this session reconciled them), since it was one human-led config change plus a deploy, both human gates. Recorded here after the fact so the plan matches what shipped. See D-12 and `SESSION_LOG.md`.
+
+**Depends on:** B1 done.
+
+**Task:**
+
+| ID | Task | Commit |
+|---|---|---|
+| B1a-01 | Replace `G-XXXXXXXXXX` with the live Measurement ID in `app/layout.tsx`, record in `DECISIONS.md` D-12 | `feat(analytics): B1a-01 set live GA4 measurement ID` (already pushed) |
+
+**Verification:** build and lint clean (per the commit message). Confirmed by WebFetch this session: the live URL serves the page, headline and footer credit both correct.
+
+---
+
 ## B2. Post deploy handoff
 
-**Status:** blocked: pending Isaac deploying to Vercel and running PageSpeed Insights
+**Status:** in progress. Site is live at `https://landing-03-market-clarity.vercel.app`, confirmed reachable this session. Split below by who can actually verify each piece: this machine has no working outbound network path to the live host (Playwright and curl both fail DNS resolution from this sandbox; WebFetch reached it once and then started timing out), and GA4 DebugView and PageSpeed both require Isaac's own Google login regardless.
 
-**Depends on:** B1 done, then Isaac deploys.
+**Depends on:** B1 done, B1a done, Isaac deployed. All satisfied.
 
 **Goal:** Hand the production URL and the real Lighthouse mobile score to project `05-isaac-site` for `[TODO_URL_3]` and `[TODO_SCORE_3]`.
 
 **Tasks:**
 
-| ID | Task |
-|---|---|
-| B2-01 | Confirm GA4 DebugView shows `page_view`, `countdown_view` once, `cta_click`, and `webinar_signup` with both location values on the live URL |
-| B2-02 | Confirm the live countdown shows a sensible time in a real browser timezone |
-| B2-03 | Record the production URL and the real PageSpeed mobile score in `SESSION_LOG.md`. Do not guess the score. |
-| B2-04 | Report both to Isaac for entry into project 05 |
+| ID | Task | Who | Status |
+|---|---|---|---|
+| B2-00 | Confirm the live URL serves the correct page | Claude | done, this session, via WebFetch: headline `STOP GUESSING WHAT THE MARKET IS DOING.` and footer credit both present |
+| B2-01 | Confirm GA4 DebugView shows `page_view`, `countdown_view` once, `cta_click`, and `webinar_signup` with both location values on the live URL | **Isaac** (needs Google login to the GA4 property) | not started |
+| B2-02 | Confirm the live countdown shows a sensible time in a real browser timezone | **Isaac** (this machine cannot reach the live host reliably from this sandbox to check it directly) | not started |
+| B2-03 | Record the production URL and the real PageSpeed mobile score in `SESSION_LOG.md`. Do not guess the score. | Production URL: done, see below. Score: **Isaac**, do not guess | URL done, score not started |
+| B2-04 | Report both to Isaac for entry into project 05 | Claude, once 01 to 03 are in | blocked on 01 to 03 |
 
-**Verification: rung 4**, live end to end against the deployed page and the real GA4 property.
+**Production URL (B2-03, partial):** `https://landing-03-market-clarity.vercel.app`
+
+**Steps for Isaac, B2-01 (GA4 DebugView):**
+
+1. In GA4, open Admin > DebugView for the `landing-03-market-clarity.vercel.app` property.
+2. Install the "Google Analytics Debugger" browser extension, or append `?gtm_debug=x` awareness is not needed for GA4; instead enable debug mode by visiting the live URL with the extension active, or run `gtag('config', 'G-0QXCCQYR17', {debug_mode: true})` from the browser console before reloading.
+3. Load the live URL. Confirm `page_view` appears in DebugView.
+4. Confirm `countdown_view` appears exactly once (should not repeat on scroll or reload within the same session view).
+5. Click a CTA and confirm `cta_click`.
+6. Submit the hero form with a real-looking name and email, confirm `webinar_signup` with `location: hero_form`.
+7. Scroll to the final section, submit that form, confirm a second `webinar_signup` with `location: final_form`.
+
+**Steps for Isaac, B2-02 (live countdown sanity check):** open the live URL in a normal browser, confirm the digits look right for "next Thursday at 19:00 in your local time" given today's date and time, and confirm the seconds are ticking.
+
+**Steps for Isaac, B2-03 (PageSpeed):** run PageSpeed Insights (pagespeed.web.dev) against the live URL, mobile tab, record the performance score.
+
+**Verification: rung 4**, live end to end against the deployed page and the real GA4 property. B2-00 is the only piece of that rung this session could complete; 01 to 03 need Isaac's own login and, right now, a working network path this sandbox does not have.
 
 ---
 

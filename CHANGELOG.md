@@ -35,3 +35,22 @@ All notable changes to Market Clarity Live. Format based on Keep a Changelog. Th
 
 - GA4 Measurement ID is still the `G-XXXXXXXXXX` placeholder, and the Meta Pixel ID is still absent. Both are human gates.
 - Not deployed. Deployment is a human gate.
+
+## B1a. Live GA4 Measurement ID and deploy (2026-08-07)
+
+### Changed
+
+- `G-XXXXXXXXXX` replaced with the live Measurement ID `G-0QXCCQYR17` in `app/layout.tsx`. The property and web data stream were created by Isaac for `landing-03-market-clarity.vercel.app`. Recorded as D-12.
+- Deployed to Vercel. Live at `https://landing-03-market-clarity.vercel.app`.
+
+### Notes
+
+- Meta Pixel ID still absent, block still commented. Human gate, unchanged.
+
+## B2. Post deploy handoff (in progress, 2026-08-07)
+
+### Notes
+
+- Live URL confirmed serving the correct page (headline and footer credit both verified).
+- GA4 DebugView confirmation, the live countdown sanity check, and the real PageSpeed mobile score all still need Isaac. None of it is guessed. See `BATCH_PLAN.md` B2 for the exact steps.
+- D-05, the countdown edge case, closed with no code change: Isaac confirmed the display clamp to zeros is the desired behavior.

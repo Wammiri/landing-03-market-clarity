@@ -76,7 +76,9 @@ Between 19:00:00 and 19:00:59 on a Thursday, `getHours() === 19` and `getMinutes
 
 **Cost if wrong:** very low. If Isaac wants the function fixed, the change is `getMinutes() > 0` to `getMinutes() >= 0`, or more simply comparing the computed target against `now` and adding seven days if it is not in the future. One line, isolated.
 
-**Status:** inferred, flagged for Isaac. Surface this at the top of the B1 session report.
+**Resolved 2026-08-07:** Isaac confirmed the clamp is fine and the function stays exactly as specced. No code change.
+
+**Status:** settled
 
 ---
 
@@ -209,3 +211,17 @@ Between 19:00:00 and 19:00:59 on a Thursday, `getHours() === 19` and `getMinutes
 **Confidence:** high. **Cost if wrong:** near zero, it is one line in `next.config.ts`.
 
 **Status:** settled
+
+---
+
+## D-17. B2 live verification cannot run from this machine's Claude Code sandbox
+
+**The issue found in B2:** this session's Bash and PowerShell tools cannot resolve DNS for the live host (`curl` returned no response, `vercel whoami` hung, Playwright's browser failed with `net::ERR_NAME_NOT_RESOLVED`). WebFetch reached the live URL successfully once, confirming the page serves the correct headline and footer credit, then failed on a second and third call with `getaddrinfo ETIMEOUT`. The outbound path this tool has to the public internet is narrow and not reliable enough for a rung 4 check.
+
+**Chosen:** Do not claim rung 4 verification that did not happen. `BATCH_PLAN.md` B2 is split so the one piece confirmed (the live URL serves correctly, B2-00) is recorded as done, and the pieces that need either a working browser session against the live host or Isaac's own Google login (GA4 DebugView, PageSpeed, direct eyeball of the countdown) are left explicitly for Isaac with exact steps.
+
+**Why:** GA4 DebugView and PageSpeed were already human gates regardless of network access, since both require Isaac's own login. The countdown sanity check and a full Playwright pass against the live URL were plausibly automatable, but not from this sandbox today.
+
+**Trigger that would change this:** if a future session's outbound network to the live host proves reliable (worth a quick retry at the start of any future B2 attempt), the Playwright live-check approach drafted this session can be reused to automate B2-00 and a countdown/event check, narrowing what is left for Isaac to just DebugView and PageSpeed.
+
+**Status:** settled, flagged for Isaac
