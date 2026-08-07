@@ -187,3 +187,19 @@ Between 19:00:00 and 19:00:59 on a Thursday, `getHours() === 19` and `getMinutes
 **Why:** Vercel CLI on this machine is not logged in. Deployment is also outward facing.
 
 **Status:** settled, blocked pending Isaac
+
+---
+
+## D-16. `agentRules: false` in `next.config.ts`, to stop Next.js rewriting `CLAUDE.md`
+
+**The issue found in B1:** Next.js 16 runs `writeAgentFiles()` on every `next dev`. It appends a managed block to `AGENTS.md`, or to `CLAUDE.md` when no `AGENTS.md` hosts it. On the first dev run it appended that block to this project's `CLAUDE.md`. The block contains two em dashes, so the mandatory em dash scan failed, and it silently rewrote a pack file that is outside every batch's bounded file list. The block re-adds itself, so deleting it is not durable.
+
+**Chosen:** Set `agentRules: false` in `next.config.ts`. The generated block is removed and never regenerates. No `AGENTS.md` is created.
+
+**Why:** It is the supported off switch, named by Next.js itself in the dev output. The alternative considered and tested was to keep a stub `AGENTS.md` to absorb the block, which works (verified: `CLAUDE.md` is then skipped) but leaves an em dash carrying file in the repo and an extra file nobody asked for. Turning the feature off is cleaner and keeps the scan honest.
+
+**Traded off:** Nothing of value. The block only tells an agent to read the bundled Next.js docs, which is not a project rule and is not something this pack depends on.
+
+**Confidence:** high. **Cost if wrong:** near zero, it is one line in `next.config.ts`.
+
+**Status:** settled
